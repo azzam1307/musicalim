@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
-import 'controller/bottom_nav_controller.dart';
+import 'package:musicallim_test/controllers/playlist_controller.dart';
+import 'package:provider/provider.dart';
+import 'controllers/bottom_nav_controller.dart'; // Import your BottomNavController
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => PlaylistController()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -15,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const BottomNavController(),
+      home: const BottomNavController(), // Use BottomNavController as the home
     );
   }
 }

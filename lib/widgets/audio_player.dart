@@ -1,36 +1,52 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
-class AudioPlayerPage extends StatefulWidget {
+class AudioPlayerWidget extends StatefulWidget {
+  final String audioPath;
   final String title;
   final String artist;
   final String imageUrl;
-  final String audioPath; // Path file audio dari asset
 
-  const AudioPlayerPage({
+  const AudioPlayerWidget({
     Key? key,
+    required this.audioPath,
     required this.title,
     required this.artist,
     required this.imageUrl,
-    required this.audioPath,
   }) : super(key: key);
 
   @override
-  _AudioPlayerPageState createState() => _AudioPlayerPageState();
+  _AudioPlayerWidgetState createState() => _AudioPlayerWidgetState();
 }
 
-class _AudioPlayerPageState extends State<AudioPlayerPage> {
-  final AudioPlayer _audioPlayer = AudioPlayer();
+class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
+  late AudioPlayer _audioPlayer;
   bool _isPlaying = false;
 
-  void _togglePlayPause() async {
-    if (_isPlaying) {
-      await _audioPlayer.pause();
-    } else {
-      await _audioPlayer.play(AssetSource(widget.audioPath));
-    }
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayer = AudioPlayer();
+  }
+
+  void _playAudio() async {
+    await _audioPlayer.play(AssetSource(widget.audioPath));
     setState(() {
-      _isPlaying = !_isPlaying;
+      _isPlaying = true;
+    });
+  }
+
+  void _pauseAudio() async {
+    await _audioPlayer.pause();
+    setState(() {
+      _isPlaying = false;
+    });
+  }
+
+  void _stopAudio() async {
+    await _audioPlayer.stop();
+    setState(() {
+      _isPlaying = false;
     });
   }
 
@@ -42,78 +58,77 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+  return Center(
+    child: Card(
+      elevation: 4.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0), // Adjust padding inside the card
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            // Gambar album musik
-            CircleAvatar(
-              radius: 100,
-              backgroundImage: AssetImage(widget.imageUrl),
-            ),
-            const SizedBox(height: 20),
-            // Nama lagu dan artis
             Text(
               widget.title,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontSize: 28, // Adjusted the title size
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center, // Center the text
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(
               widget.artist,
-              style: const TextStyle(fontSize: 18, color: Colors.grey),
+              style: const TextStyle(
+                fontSize: 18, // Adjusted the artist size
+                color: Colors.grey, // Make the artist name color subtle
+              ),
+              textAlign: TextAlign.center, // Center the text
             ),
-            const Spacer(),
-            // Kontrol audio player
+            const SizedBox(height: 15),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15.0), // Round the image corners
+              child: Image.network(
+                widget.imageUrl,
+                height: 200, // Set a fixed size for the image
+                width: 200,
+                fit: BoxFit.cover, // Cover the card area neatly
+              ),
+            ),
+            const SizedBox(height: 20),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.skip_previous),
-                  iconSize: 40,
+                  icon: Icon(
+                    _isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
+                    size: 64,
+                    color: Colors.blue, // Highlight the button in color
+                  ),
                   onPressed: () {
-                    // Aksi untuk lagu sebelumnya
+                    if (_isPlaying) {
+                      _pauseAudio();
+                    } else {
+                      _playAudio();
+                    }
                   },
                 ),
                 IconButton(
-                  icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-                  iconSize: 64,
-                  onPressed: _togglePlayPause,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.skip_next),
-                  iconSize: 40,
-                  onPressed: () {
-                    // Aksi untuk lagu selanjutnya
-                  },
+                  icon: const Icon(
+                    Icons.stop_circle,
+                    size: 64,
+                    color: Colors.red, // Make stop button red
+                  ),
+                  onPressed: _stopAudio,
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.shuffle),
-                  onPressed: () {
-                    // Aksi untuk shuffle
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.repeat),
-                  onPressed: () {
-                    // Aksi untuk repeat
-                  },
-                ),
-              ],
-            ),
-            const Spacer(),
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

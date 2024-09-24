@@ -5,6 +5,7 @@ class SongCard extends StatelessWidget {
   final String artist;
   final String imageUrl;
   final VoidCallback onTap;
+  final VoidCallback onAddToPlaylist;
 
   const SongCard({
     Key? key,
@@ -12,21 +13,34 @@ class SongCard extends StatelessWidget {
     required this.artist,
     required this.imageUrl,
     required this.onTap,
+    required this.onAddToPlaylist,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 3,
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundImage: NetworkImage(imageUrl), // Gambar dari internet
+      margin: const EdgeInsets.all(8.0),
+      child: InkWell(
+        onTap: onTap,
+        child: Row(
+          children: [
+            Image.network(imageUrl, width: 100, height: 100, fit: BoxFit.cover),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(artist),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: onAddToPlaylist,
+            ),
+          ],
         ),
-        title: Text(title),
-        subtitle: Text(artist),
-        trailing: const Icon(Icons.play_arrow),
-        onTap: onTap,  // Aksi ketika card di-tap
       ),
     );
   }
