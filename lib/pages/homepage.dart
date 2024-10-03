@@ -127,7 +127,7 @@ class Homepage extends StatelessWidget {
                 'Peligrosa',
                 'Floyymenor',
                 'https://i.scdn.co/image/ab67616d0000b273f78c5533df63ff4c3e86f64b',
-                'gata.mp3',
+                'peligrosa.mp3', // Correct path
               );
             },
           ),
@@ -142,7 +142,7 @@ class Homepage extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => AudioPlayerWidget(
                     title: 'Ransom',
-                    artist: 'Lil Teccar',
+                    artist: 'Lil Tecca',
                     imageUrl:
                         'https://i.scdn.co/image/ab67616d0000b273bd69bbde4aeee723d6d08058',
                     audioPath: 'ransom.mp3', // Correct path
@@ -156,7 +156,7 @@ class Homepage extends StatelessWidget {
                 'Ransom',
                 'Lil Tecca',
                 'https://i.scdn.co/image/ab67616d0000b273bd69bbde4aeee723d6d08058',
-                'gata.mp3',
+                'ransom.mp3', // Correct path
               );
             },
           ),
@@ -191,20 +191,25 @@ class Homepage extends StatelessWidget {
 
         return AlertDialog(
           title: const Text('Add to Playlist'),
-          content: DropdownButton<String>(
-            value: selectedPlaylist,
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                selectedPlaylist = newValue;
-              }
-            },
-            items: playlistController.playlistFolders
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButton<String>(
+                value: selectedPlaylist,
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    selectedPlaylist = newValue;
+                  }
+                },
+                items: playlistController.playlistFolders
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
           actions: [
             TextButton(
@@ -217,6 +222,7 @@ class Homepage extends StatelessWidget {
               onPressed: () {
                 // Add the song to the selected playlist
                 playlistController.addToPlaylist(
+                  selectedPlaylist, // Menambahkan parameter folderName
                   title,
                   artist,
                   imageUrl,

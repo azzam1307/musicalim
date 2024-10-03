@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:musicallim_test/pages/songlist.dart';
 import 'package:provider/provider.dart';
 import 'package:musicallim_test/controllers/playlist_controller.dart';
 
@@ -29,14 +30,25 @@ class PlaylistPage extends StatelessWidget {
             itemCount: folders.length,
             itemBuilder: (context, index) {
               final folderName = folders[index];
+              final songs = playlistController.getSongsForFolder(folderName); // Ambil lagu di folder
+
               return GestureDetector(
                 onTap: () {
-                  // Handle opening the playlist folder
+                  // Navigasi ke SongListPage saat folder diklik
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SongListPage(
+                        folderName: folderName,
+                        songs: songs,
+                      ),
+                    ),
+                  );
                 },
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
-                    side: BorderSide(color: Colors.blueAccent, width: 2),
+                    side: const BorderSide(color: Colors.blueAccent, width: 2),
                   ),
                   margin: const EdgeInsets.all(10),
                   child: Container(
@@ -95,8 +107,8 @@ class PlaylistPage extends StatelessWidget {
               child: const Text('Create'),
             ),
           ],
-        );
+        );  // Tanda kurung tutup untuk AlertDialog
       },
-    );
+    );  // Tanda kurung tutup untuk showDialog
   }
 }
