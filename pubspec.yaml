@@ -14,6 +14,11 @@ dependencies:
   audioplayers: ^6.1.0  # Ensure this version supports null safety
   provider: ^6.0.5
   file_picker: ^5.2.2  # Versi terbaru saat ini
+  sqflite: ^2.4.0  # Pastikan untuk menggunakan versi terbaru yang kompatibel
+  path: ^1.8.0        # Digunakan untuk menentukan jalur file database
+  google_fonts: ^4.0.0
+  cached_network_image: ^3.2.1
+
 
   cupertino_icons: ^1.0.8
 
@@ -25,4 +30,5 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
+    - assets/songs.json
   uses-material-design: true

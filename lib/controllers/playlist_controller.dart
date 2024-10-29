@@ -1,69 +1,137 @@
-import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:musicallim_test/services/database_service.dart';
+import 'package:musicallim_test/models/playlist_model.dart';
+import 'package:musicallim_test/models/song_model.dart';
 
-class PlaylistController with ChangeNotifier {
-  // Untuk menyimpan lagu berdasarkan folder playlist
-  final Map<String, List<Map<String, String>>> _playlistFolders = {}; // Folder => Daftar Lagu
+class PlaylistController extends GetxController {
+  var playlistFolders = <PlaylistModel>[].obs;
+  var playlists = <int, List<SongModel>>{}.obs;
+  final DatabaseService databaseService = DatabaseService();
 
-  // Getter untuk folder playlist
-  List<String> get playlistFolders => _playlistFolders.keys.toList();
-
-  // Mendapatkan daftar lagu untuk folder tertentu
-  List<Map<String, String>> getSongsForFolder(String folderName) {
-    return _playlistFolders[folderName] ?? [];
+  @override
+  void onInit() {
+    super.onInit();
+    loadPlaylistsFromDb();
   }
 
-  // Menambahkan lagu ke folder playlist tertentu
-  void addToPlaylist(String folderName, String title, String artist, String imageUrl, String audioPath) {
-    if (title.isEmpty || artist.isEmpty || folderName.isEmpty) {
-      throw Exception('Title, artist, and folder name cannot be empty'); // Validasi input
-    }
+  Future<void> loadPlaylistsFromDb() async {
+    try {
+      List<Map<String, dynamic>> dbPlaylists = await databaseService.getPlaylists();
+      for (var playlist in dbPlaylists) {
+        PlaylistModel playlistModel = PlaylistModel.fromMap(playlist);
+        playlistFolders.add(playlistModel);
 
-    if (_playlistFolders.containsKey(folderName)) {
-      _playlistFolders[folderName]?.add({
-        'title': title,
-        'artist': artist,
-        'imageUrl': imageUrl,
-        'audioPath': audioPath,
-      });
-    } else {
-      // Jika folder belum ada, buat folder baru lalu tambahkan lagu
-      _playlistFolders[folderName] = [
-        {
-          'title': title,
-          'artist': artist,
-          'imageUrl': imageUrl,
-          'audioPath': audioPath,
+        if (playlistModel.id != null) {
+          playlists[playlistModel.id!] = await loadSongsFromDb(playlistModel.id!);
         }
-      ];
-    }
-    notifyListeners(); // Memberitahu semua listener bahwa data telah berubah
-  }
-
-  // Menambahkan folder playlist baru (tanpa lagu)
-  void addPlaylistFolder(String folderName) {
-    if (folderName.isEmpty) {
-      throw Exception('Folder name cannot be empty'); // Validasi input
-    }
-
-    if (!_playlistFolders.containsKey(folderName)) {
-      _playlistFolders[folderName] = []; // Inisialisasi folder dengan daftar lagu kosong
-      notifyListeners(); // Memberitahu semua listener bahwa folder telah ditambahkan
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load playlists: $e');
     }
   }
 
-  // Menghapus lagu dari folder playlist
-  void removeSongFromFolder(String folderName, String title) {
-    if (_playlistFolders.containsKey(folderName)) {
-      _playlistFolders[folderName]?.removeWhere((song) => song['title'] == title);
-      notifyListeners(); // Memberitahu listener bahwa data telah diubah
+  Future<List<SongModel>> loadSongsFromDb(int playlistId) async {
+    List<Map<String, dynamic>> dbSongs = await databaseService.getSongsForPlaylist(playlistId);
+    return dbSongs.map((song) => SongModel.fromMap(song)).toList();
+  }
+
+  Future<void> addPlaylistFolder(String folderName) async {
+    if (!playlistFolders.any((playlist) => playlist.name.toLowerCase() == folderName.toLowerCase())) {
+      try {
+        int playlistId = await databaseService.addPlaylist(folderName);
+        PlaylistModel newPlaylist = PlaylistModel(id: playlistId, name: folderName);
+        playlistFolders.add(newPlaylist);
+        playlists[playlistId] = [];
+      } catch (e) {
+        Get.snackbar('Error', 'Failed to add playlist: $e');
+      }
+    } else {
+      Get.snackbar('Warning', 'Playlist already exists.');
     }
   }
 
-  // Menghapus folder playlist
-  void removePlaylistFolder(String folderName) {
-    if (_playlistFolders.containsKey(folderName)) {
-      _playlistFolders.remove(folderName);
-      notifyListeners(); // Memberitahu listener bahwa folder telah dihapus
+  Future<void> addToPlaylist(String folder, String title, String artist, String imageUrl, String audioPath) async {
+    PlaylistModel? selectedPlaylist = playlistFolders.firstWhereOrNull((playlist) => playlist.name == folder);
+
+    if (selectedPlaylist?.id != null) {
+      SongModel newSong = SongModel(
+        id: 0,
+        title: title,
+        artist: artist,
+        imageUrl: imageUrl,
+        audioPath: audioPath,
+        playlistId: selectedPlaylist!.id!,
+      );
+
+      try {
+        await databaseService.addSong(newSong);
+        playlists[selectedPlaylist.id!]!.add(newSong);
+      } catch (e) {
+        Get.snackbar('Error', 'Failed to add song: $e');
+      }
+    } else {
+      Get.snackbar('Error', 'Playlist not found');
     }
+  }
+
+  Future<void> deletePlaylist(int? playlistId) async {
+    if (playlistId != null) {
+      try {
+        await databaseService.deletePlaylist(playlistId);
+        playlistFolders.removeWhere((folder) => folder.id == playlistId);
+        playlists.remove(playlistId);
+        Get.snackbar('Success', 'Playlist deleted successfully.');
+      } catch (e) {
+        Get.snackbar('Error', 'Failed to delete playlist: $e');
+      }
+    } else {
+      Get.snackbar('Error', 'Playlist ID is null. Cannot delete.');
+    }
+  }
+
+  // Updated method to remove song from playlist
+   Future<void> removeSongFromPlaylist({
+    required int playlistId,
+    required int songId,
+  }) async {
+    try {
+      // Delete from database
+      await databaseService.deleteSong(songId);
+      
+      // Update local state
+      if (playlists.containsKey(playlistId)) {
+        // Create new list without the removed song
+        final updatedSongs = playlists[playlistId]!
+            .where((song) => song.id != songId)
+            .toList();
+        
+        // Update playlists using .value to trigger changes
+        final newPlaylists = Map<int, List<SongModel>>.from(playlists);
+        newPlaylists[playlistId] = updatedSongs;
+        playlists.value = newPlaylists;
+
+        // Update playlistFolders dengan model yang sesuai
+        final index = playlistFolders.indexWhere((folder) => folder.id == playlistId);
+        if (index != -1) {
+          final updatedFolder = PlaylistModel(
+            id: playlistId,
+            name: playlistFolders[index].name,
+          );
+          
+          final newFolders = List<PlaylistModel>.from(playlistFolders);
+          newFolders[index] = updatedFolder;
+          playlistFolders.value = newFolders;
+        }
+      }
+      
+      update(); // Force UI update
+    } catch (e) {
+      print('Error removing song from playlist: $e');
+      Get.snackbar('Error', 'Failed to remove song from playlist');
+    }
+  }
+
+  List<SongModel> getSongsFromPlaylist(int playlistId) {
+    return playlists[playlistId] ?? [];
   }
 }

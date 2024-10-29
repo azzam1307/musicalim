@@ -1,0 +1,114 @@
+[
+    {
+        "title": "Why",
+        "artist": "Bazzi",
+        "imageUrl":
+            "https://i.scdn.co/image/ab67616d0000b273f9f2d43ff44bdfbe8c556f8d",
+        "audioPath": "bazzi.mp3"
+      },
+      {
+        "title": "Love Nwantiti",
+        "artist": "Ckay",
+        "imageUrl":
+            "https://i1.sndcdn.com/artworks-29yIyNIypDmFztBs-Bqu3zQ-t500x500.png",
+        "audioPath": "ckay.mp3"
+      },
+      {
+        "title": "Gata Only",
+        "artist": "Floyymenor",
+        "imageUrl":
+            "https://i.scdn.co/image/ab67616d0000b273c4583f3ad76630879a75450a",
+        "audioPath": "gata.mp3"
+      },
+      {
+        "title": "Peligrosa",
+        "artist": "Floyymenor",
+        "imageUrl":
+            "https://i.scdn.co/image/ab67616d0000b273f78c5533df63ff4c3e86f64b",
+        "audioPath": "peligrosa.mp3"
+      },
+      {
+        "title": "Ransom",
+        "artist": "Lil Tecca",
+        "imageUrl":
+            "https://i.scdn.co/image/ab67616d0000b273bd69bbde4aeee723d6d08058",
+        "audioPath": "ransom.mp3"
+      },
+      {
+        "title": "Embrace it",
+        "artist": "Ndotz",
+        "imageUrl":
+            "https://i.scdn.co/image/ab67616d00001e02536637d541ec8a43842ef126",
+        "audioPath": "embraceit.mp3"
+      },
+      {
+        "title": "Die With A Smile",
+        "artist": "Bruno Mars, Lady Gaga",
+        "imageUrl":
+            "https://i.discogs.com/my-Hw-OAoNKQoTss4C8BhpJUPCPa4WXOJNcFY9myKls/rs:fit/g:sm/q:90/h:600/w:598/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTMxNDky/NjM0LTE3MjQzMjYw/NzItOTIwNi5qcGVn.jpeg",
+        "audioPath": "diewithasmile.mp3"
+      },
+      {
+        "title": "Sailor",
+        "artist": "Gigi Perez",
+        "imageUrl":
+            "https://brockpress.com/wp-content/uploads/2024/10/photo-by-taylor-5.jpg",
+        "audioPath": "sailor.mp3"
+      },
+      {
+        "title": "Birds of a Feather",
+        "artist": "Billie Eilish",
+        "imageUrl":
+            "https://i1.sndcdn.com/artworks-HqTUZOayE3PU380F-6gCL0g-t1080x1080.jpg",
+        "audioPath": "birdsofafeather.mp3"
+      },
+      {
+        "title": "Waiting Room",
+        "artist": "Phoebe Bridgers",
+        "imageUrl":
+            "https://i.scdn.co/image/ab67616d0000b2734869178d6ce3c0d488083f9d",
+        "audioPath": "waitingroom.mp3"
+      },
+      {
+        "title": "Sampai Jadi Debu",
+        "artist": "Banda Neira",
+        "imageUrl":
+            "https://i.scdn.co/image/ab67616d0000b273c1528165fd2e76da5331b48c",
+        "audioPath": "sampaijadidebu.mp3"
+      },
+      {
+        "title": "To the Bone",
+        "artist": "Pamungkas",
+        "imageUrl":
+            "https://cdns-images.dzcdn.net/images/cover/5e6010236d9de1950e54250a0fa08a04/500x500.jpg",
+        "audioPath": "tothebone.mp3"
+      },
+      {
+        "title": "Highest in the Room",
+        "artist": "Traviss Scott",
+        "imageUrl":
+            "https://i.scdn.co/image/ab67616d0000b273e42b5fea4ac4c3d6328b622b",
+        "audioPath": "highestintheroom.mp3"
+      },
+      {
+        "title": "U Are My High",
+        "artist": "DJ Snake",
+        "imageUrl":
+            "https://cdns-images.dzcdn.net/images/cover/333f65718694cf3294f6f262053a91da/500x500.jpg",
+        "audioPath": "uaremyhigh.mp3"
+      },
+      {
+        "title": "Umaasa",
+        "artist": "Calein",
+        "imageUrl":
+            "https://i.scdn.co/image/ab67616d0000b2732d6a3c20c37868408e4ae97f",
+        "audioPath": "umaasa.mp3"
+      },
+      {
+        "title": "Sleep Well",
+        "artist": "d4vd",
+        "imageUrl":
+            "https://lastfm.freetls.fastly.net/i/u/ar0/12f706c62bf69111cd7b33f1a34a592f.jpg",
+        "audioPath": "sleepwell.mp3"
+      }
+]
